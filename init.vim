@@ -25,16 +25,41 @@ Plug 'junegunn/fzf.vim'
 " tmux
 Plug 'christoomey/vim-tmux-navigator'
 
+" Theme
+Plug 'morhetz/gruvbox'
 
 call plug#end()
-
 
 " Suppress error
 let g:loaded_clipboard_provider = 1
 
+" Fix Slow Escape
+if ! has('gui_running')
+    set ttimeoutlen=10
+    augroup FastEscape
+        autocmd!
+        au InsertEnter * set timeoutlen=0
+        au InsertLeave * set timeoutlen=1000
+    augroup END
+endif
+
+" ====================================================================================================
+" FZF
+" ====================================================================================================
+
+let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=lib --exclude=package-lock.json'
+let $FZF_DEFAULT_COMMAND = 'ag -f --hidden --skip-vcs-ignores --ignore .git --ignore lib --ignore node_modules -l -g ""'
+
 " ====================================================================================================
 " Editor Config
 " ====================================================================================================
+"
+" Allow mouse
+set mouse=a
+
+" Theme
+colorscheme gruvbox
+
 " Turn on code Syntax
 :syntax on
 " Turn off *.swp
@@ -72,6 +97,9 @@ let g:coc_global_extensions = [
   \ 'coc-prettier', 
   \ 'coc-json',
   \ ]
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
 
 " ====================================================================================================
 " NERDTree
